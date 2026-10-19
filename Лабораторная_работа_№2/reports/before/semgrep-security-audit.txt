@@ -1,0 +1,35 @@
+                   
+                   
+┌─────────────────┐
+│ 3 Code Findings │
+└─────────────────┘
+                               
+  [36m[22m[24m  app/utils.py[0m
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+           12┆ return eval(expr)
+   
+   ❯❯❱ python.requests.security.disabled-cert-validation.disabled-cert-validation
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Certificate verification has been explicitly disabled. This permits insecure connections to insecure
+          servers. Re-enable certification validation.                                                        
+          Details: https://sg.run/AlYp                                                                        
+                                                                                                              
+           ▶▶┆ Autofix ▶ requests.get(url, verify=True)
+           16┆ return requests.get(url, verify=False)
+   
+   ❯❯❱ python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          Found 'subprocess' function 'call' with 'shell=True'. This is dangerous because this call will spawn
+          the command using a shell process. Doing so propagates current shell settings and variables, which  
+          makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.          
+          Details: https://sg.run/J92w                                                                        
+                                                                                                              
+           ▶▶┆ Autofix ▶ False
+           29┆ subprocess.call(cmd, shell=True)
+
