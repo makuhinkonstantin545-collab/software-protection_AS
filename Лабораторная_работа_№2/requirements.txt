@@ -1,6 +1,6 @@
 fastapi==0.115.0
-starlette==0.40.0
+starlette==0.38.6
 requests==2.32.4
 PyYAML==6.0.2
 Jinja2==3.1.6
-urllib3==2.5.0
+urllib3==2.8.0
