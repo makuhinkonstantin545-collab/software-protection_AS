@@ -11,15 +11,13 @@
 
 | Компонент | Значение |
 |---|---|
-| Хост | Windows 11 Pro, Intel Core i7-14700HX, 24 ГБ RAM, WSL2 (Ubuntu) |
+| Хост | Windows 11 Pro, WSL2 (Ubuntu) |
 | Виртуализация | Oracle VirtualBox, сетевой мост (Bridged) |
 | ВМ | Ubuntu Server 24.04.5 LTS, 8 ГБ RAM, 4 vCPU, диск 40 ГБ (динамический) |
 | IP ВМ | 172.20.10.14 |
 | GitLab | GitLab CE 19.5.1 (пакет из репозитория packages.gitlab.com) |
 | GitLab Runner | 19.5.2, executor `docker`, образ `alpine:latest`, тег `linux` |
 | Docker | docker.io (нужен executor `docker` на самой ВМ) |
-
-**Примечание об ОС.** В методичке указана Ubuntu 22.04. Использована Ubuntu 24.04.5 LTS: GitLab CE официально поддерживает обе версии, установка выполнялась по тем же командам.
 
 ## 3. Ход работы
 
@@ -52,8 +50,6 @@ sudo apt install -y postfix          # Internet Site
 curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
 sudo EXTERNAL_URL="http://172.20.10.14" apt install -y gitlab-ce
 ```
-
-Установка заняла около получаса: пакет 1,2 ГБ распаковывается на 4,3 ГБ. Во время распаковки процесс `dpkg` был в состоянии R с загрузкой CPU, то есть работал, а не завис.
 
 ![Распаковка GitLab](screenshots/03-gitlab-install-progress.png)
 
