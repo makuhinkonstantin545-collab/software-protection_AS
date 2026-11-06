@@ -35,9 +35,6 @@ ssh pepe@172.20.10.14
 
 Результат: ВМ получила адрес 172.20.10.14, интернет доступен, подключение по SSH работает.
 
-![SSH-сессия на ВМ](screenshots/01-ssh-vm.png)
-
-![Адрес ВМ и проверка сети](screenshots/02-vm-ping-ip.png)
 
 ### Этап 2. Установка GitLab CE
 
@@ -51,7 +48,6 @@ curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.de
 sudo EXTERNAL_URL="http://172.20.10.14" apt install -y gitlab-ce
 ```
 
-![Распаковка GitLab](screenshots/03-gitlab-install-progress.png)
 
 Проверка служб:
 
@@ -65,13 +61,11 @@ sudo gitlab-ctl status
 
 Временный пароль находится в `/etc/gitlab/initial_root_password` (удаляется через 24 часа). Вход выполнен под root, при первом входе пароль сменён.
 
-![Первый вход в GitLab](screenshots/04-gitlab-first-login.png)
 
 ### Этап 4. Проект и Runner
 
 **4.1. Проект.** Создан проект `test-project` (Private). Репозиторий пустой, GitLab выдаёт инструкцию с командами Git.
 
-![Проект создан](screenshots/05-project-created.png)
 
 **4.2. Runner.** В настройках проекта создан Runner с тегом `linux`. На ВМ выполнены установка и регистрация:
 
@@ -86,7 +80,6 @@ sudo gitlab-runner status
 
 Проверка: `gitlab-runner verify` вернул `is valid`, служба `active (running)`, Runner в GitLab в статусе **Online**.
 
-![Runner online](screenshots/06-runner-online.png)
 
 ### Этап 5. Первый push
 
@@ -131,15 +124,7 @@ job1:
 
 **Проблема и её решение.** Первый pipeline (коммит `f32fc2f`) завис в статусе **Pending** с пометкой «The project doesn't have any runners online assigned to it». Причина: Runner зарегистрирован с тегом `linux`, а задание без тега, и Runner его не берёт. Добавлена строка `tags: [linux]` — после этого задание выполнилось.
 
-![Задание в Pending без тега](screenshots/08-job-stuck-no-tag.png)
-
-![Pipeline в Pending](screenshots/07-pipeline-pending.png)
-
 Успешный запуск (коммит `ae6d6493`):
-
-![Список заданий](screenshots/09-jobs-list.png)
-
-![Журнал задания: Passed](screenshots/10-job-log-passed.png)
 
 В журнале видно: Runner `#1` (bgJe0mz9) клонирует репозиторий, выполняет `echo`, выводит `CI/CD is working!` и завершает задание с `Job succeeded`.
 
@@ -153,10 +138,6 @@ git push origin feature/update-readme
 ```
 
 Создан Merge Request !1 (`feature/update-readme` → `main`). Первая проверка блокировала слияние «1 check failed», пока pipeline не завершился. После успешной проверки (pipeline #3 passed) слияние выполнено, ветка удалена, коммит слияния `70288eb2` в `main`.
-
-![Merge request создан](screenshots/11-mr-created.png)
-
-![Merge request слит](screenshots/12-mr-merged.png)
 
 ## 4. Ответы на контрольные вопросы
 
@@ -190,7 +171,5 @@ Runner — отдельная программа-исполнитель. GitLab 
 
 **8. Где в веб-интерфейсе GitLab просмотреть историю выполнения пайплайнов?**
 В проекте: **Build → Pipelines** (список всех запусков, статусы и коммиты). Открыв конкретный pipeline, видно его задания, а по ссылке на задание — полный журнал выполнения. Список всех заданий отдельно доступен в **Build → Jobs**.
-
-## 5. Выводы
 
 Установлен GitLab CE и GitLab Runner на виртуальной машине Ubuntu, создан проект, настроен доступ по SSH-ключу, выполнены push и три задания. Pipeline выполнен Runner'ом с тегом `linux`, Merge Request проведён через проверку CI. Главная трудность — задание без тега не бралось Runner'ом; это наглядно показало, как метки связывают задания и исполнители.
